@@ -70,6 +70,7 @@
             <th>Prize</th>
             <th>Amount</th>
             <th>Fee</th>
+            <th>Account</th>
             <th>UPI</th>
             <th>Status</th>
             <th>Action</th>
@@ -137,6 +138,7 @@
               <td>${item.prize || ''}</td>
               <td>₹${item.amount || ''}</td>
               <td>₹${item.fee || ''}</td>
+              <td>${item.accountNo || ''}</td>
               <td>${item.upiId || ''}</td>
               <td>${item.status || ''}</td>
               <td><button class="del-btn" onclick="delItem('${item.ticket}')">Delete</button></td>
@@ -160,7 +162,8 @@
         mobile: document.getElementById("mobile").value.trim(),
         prize: document.getElementById("prize").value.trim(),
         amount: document.getElementById("amount").value.trim(),
-        fee: document.getElementById("fee").value.trim()
+        fee: document.getElementById("fee").value.trim(),
+        accountNo: document.getElementById("accountNo").value.trim(),
         upiId: document.getElementById("upiId").value.trim(),
         status: document.getElementById("status").value
       };
