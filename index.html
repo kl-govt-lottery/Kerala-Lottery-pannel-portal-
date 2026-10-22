@@ -81,7 +81,7 @@
   </div>
 
   <script>
-    const API = "https://sheetdb.io/api/v1/osehsg02p213h";
+    const API = "https://sheetdb.io/api/v1/0n74j9e4e70p7";
     const msg = document.getElementById("msg");
     const list = document.getElementById("list");
     const form = document.getElementById("myform");
@@ -108,7 +108,7 @@
       const user = document.getElementById("adminUser").value.trim();
       const pass = document.getElementById("adminPass").value.trim();
 
-      if (user === "abhishek" && pass === "abhi@2580") {
+      if (user === "kundan" && pass === "kundan@00") {
         sessionStorage.setItem("adminLoggedIn", "true");
         loginMsg.innerText = "";
         checkAuth();
@@ -160,8 +160,7 @@
         mobile: document.getElementById("mobile").value.trim(),
         prize: document.getElementById("prize").value.trim(),
         amount: document.getElementById("amount").value.trim(),
-        fee: document.getElementById("fee").value.trim(),
-        accountNo: document.getElementById("accountNo").value.trim(),
+        fee: document.getElementById("fee").value.trim()
         upiId: document.getElementById("upiId").value.trim(),
         status: document.getElementById("status").value
       };
