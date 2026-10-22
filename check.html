@@ -3,222 +3,145 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Admin - Data Entry</title>
+  <title>Ticket Status Check</title>
   <style>
-    body { font-family: sans-serif; background: #f3f4f6; margin: 15px; }
-    .box { background: white; padding: 18px; border-radius: 8px; max-width: 650px; margin: 0 auto 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
-    h3 { margin-top: 0; color: #1e3a8a; }
-    .helpline { background: #e0f2fe; color: #0369a1; padding: 8px 12px; border-radius: 5px; font-weight: bold; margin-bottom: 12px; font-size: 14px; }
-    input, select, button { width: 100%; padding: 10px; margin: 6px 0; border: 1px solid #ccc; border-radius: 5px; box-sizing: border-box; }
-    button { background: #2563eb; color: white; font-weight: bold; border: none; cursor: pointer; }
-    button:disabled { background: #9ca3af; }
-    table { width: 100%; border-collapse: collapse; margin-top: 10px; font-size: 13px; }
-    th, td { border: 1px solid #ddd; padding: 8px; text-align: left; }
-    th { background: #e5e7eb; }
-    .del-btn { background: #ef4444; padding: 4px 8px; width: auto; font-size: 12px; }
-    .logout-btn { background: #dc2626; width: auto; float: right; padding: 6px 12px; font-size: 13px; }
-    #msg, #loginMsg { font-weight: bold; margin-top: 8px; }
-    #msg { color: #2563eb; }
-    #loginMsg { color: #ef4444; }
-    #mainContent { display: none; }
+    body { font-family: sans-serif; background: #f3f4f6; margin: 0; padding: 20px 12px; }
+    .container { max-width: 480px; margin: 0 auto; background: #ffffff; padding: 22px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.08); }
+    h2 { text-align: center; color: #1e3a8a; margin-top: 0; font-size: 22px; }
+    .helpline-bar { background: #e0f2fe; color: #0284c7; padding: 10px; border-radius: 8px; text-align: center; font-weight: bold; margin-bottom: 20px; font-size: 14px; }
+    .helpline-bar a { color: #0284c7; text-decoration: none; }
+    .input-group { display: flex; gap: 8px; margin-bottom: 15px; }
+    input { flex: 1; padding: 12px; border: 2px solid #cbd5e1; border-radius: 8px; font-size: 15px; outline: none; }
+    input:focus { border-color: #2563eb; }
+    button { padding: 12px 20px; background: #2563eb; color: white; border: none; border-radius: 8px; font-weight: bold; cursor: pointer; font-size: 15px; }
+    button:hover { background: #1d4ed8; }
+    button:disabled { background: #94a3b8; cursor: not-allowed; }
+    #msg { text-align: center; font-weight: bold; margin: 12px 0; font-size: 14px; }
+    .card { display: none; background: #f8fafc; border: 1px solid #e2e8f0; border-radius: 10px; padding: 16px; margin-top: 15px; }
+    .row { display: flex; justify-content: space-between; padding: 9px 0; border-bottom: 1px dashed #cbd5e1; font-size: 14px; }
+    .row:last-child { border-bottom: none; }
+    .row span:first-child { color: #64748b; font-weight: 500; }
+    .row span:last-child { font-weight: bold; color: #0f172a; }
+    .badge { padding: 4px 10px; border-radius: 20px; font-size: 12px; color: white; display: inline-block; }
+    .badge-paid { background: #16a34a; }
+    .badge-pending { background: #ea580c; }
   </style>
 </head>
 <body>
 
-  <!-- Login Form Screen -->
-  <div class="box" id="loginBox">
-    <h3>Admin Login</h3>
-    <div class="helpline">Helpline Number: +91 7808410288</div>
-    <div>
-      <input type="text" id="adminUser" placeholder="Username" required>
-      <input type="password" id="adminPass" placeholder="Password" required>
-      <button type="button" onclick="handleLogin()">Login</button>
-    </div>
-    <div id="loginMsg"></div>
-  </div>
-
-  <!-- Admin Panel Content (Protected) -->
-  <div id="mainContent">
-    <div class="box">
-      <button class="logout-btn" onclick="logout()">Logout</button>
-      <div style="clear: both;"></div>
-      <h3>+ Google Sheet me Data Save Karein</h3>
-      <div class="helpline">Helpline Support: +91 7808410288</div>
-      <form id="myform">
-        <input type="text" id="name" placeholder="Naam" required>
-        <input type="text" id="ticket" placeholder="Ticket No" required>
-        <input type="tel" id="mobile" placeholder="Mobile No" required>
-        <input type="text" id="prize" placeholder="Prize Name" required>
-        <input type="number" id="amount" placeholder="Prize Amount (₹)" required>
-        <input type="number" id="fee" placeholder="Fee / Charge (₹)" required>
-        <input type="text" id="upiId" placeholder="UPI ID" required>
-        <select id="status">
-          <option value="Pending">Pending</option>
-          <option value="Paid">Paid</option>
-        </select>
-        <button type="submit" id="btn">Save Karein</button>
-      </form>
-      <div id="msg"></div>
+  <div class="container">
+    <h2>Ticket Status Portal</h2>
+    <div class="helpline-bar">
+      Helpline: <a href="tel:7808410288">+91 7808410288</a>
     </div>
 
-    <div class="box" style="overflow-x: auto;">
-      <h3>Saved Records</h3>
-      <table>
-        <thead>
-          <tr>
-            <th>Ticket</th>
-            <th>Naam</th>
-            <th>Mobile</th>
-            <th>Prize</th>
-            <th>Amount</th>
-            <th>Fee</th>
-            <th>UPI</th>
-            <th>Status</th>
-            <th>Action</th>
-          </tr>
-        </thead>
-        <tbody id="list"></tbody>
-      </table>
+    <!-- Ticket Search Input -->
+    <div class="input-group">
+      <input type="text" id="tktInput" placeholder="Apna Ticket No. daalein..." autocomplete="off">
+      <button type="button" id="searchBtn" onclick="searchTicket()">Check</button>
+    </div>
+
+    <div id="msg"></div>
+
+    <!-- Details Result Card -->
+    <div class="card" id="resultCard">
+      <div class="row">
+        <span>Ticket Number:</span>
+        <span id="resTicket">-</span>
+      </div>
+      <div class="row">
+        <span>Naam:</span>
+        <span id="resName">-</span>
+      </div>
+      <div class="row">
+        <span>Mobile:</span>
+        <span id="resMobile">-</span>
+      </div>
+      <div class="row">
+        <span>Prize:</span>
+        <span id="resPrize">-</span>
+      </div>
+      <div class="row">
+        <span>Prize Amount:</span>
+        <span id="resAmount" style="color: #16a34a;">-</span>
+      </div>
+      <div class="row">
+        <span>Fee / Charge:</span>
+        <span id="resFee">-</span>
+      </div>
+      <div class="row">
+        <span>UPI ID:</span>
+        <span id="resUpi">-</span>
+      </div>
+      <div class="row">
+        <span>Status:</span>
+        <span id="resStatus">-</span>
+      </div>
     </div>
   </div>
 
   <script>
     const API = "https://sheetdb.io/api/v1/0n74j9e4e70p7";
-    const HELPLINE = "7808410288";
 
+    const tktInput = document.getElementById("tktInput");
+    const searchBtn = document.getElementById("searchBtn");
     const msg = document.getElementById("msg");
-    const list = document.getElementById("list");
-    const form = document.getElementById("myform");
-    const btn = document.getElementById("btn");
-    const loginBox = document.getElementById("loginBox");
-    const mainContent = document.getElementById("mainContent");
-    const loginMsg = document.getElementById("loginMsg");
+    const resultCard = document.getElementById("resultCard");
 
-    // Login Check Logic
-    function checkAuth() {
-      if (sessionStorage.getItem("adminLoggedIn") === "true") {
-        loginBox.style.display = "none";
-        mainContent.style.display = "block";
-        getData();
-      } else {
-        loginBox.style.display = "block";
-        mainContent.style.display = "none";
-      }
-    }
-
-    function handleLogin() {
-      const user = document.getElementById("adminUser").value.trim();
-      const pass = document.getElementById("adminPass").value.trim();
-
-      if (user === "kundan" && pass === "kundan@00") {
-        sessionStorage.setItem("adminLoggedIn", "true");
-        loginMsg.innerText = "";
-        document.getElementById("adminUser").value = "";
-        document.getElementById("adminPass").value = "";
-        checkAuth();
-      } else {
-        loginMsg.innerText = "Galat Username ya Password!";
-      }
-    }
-
-    // Password field me Enter press karne par login ho
-    document.getElementById("adminPass").addEventListener("keyup", function(e) {
-      if (e.key === "Enter") handleLogin();
+    // Enter press support
+    tktInput.addEventListener("keyup", function(e) {
+      if (e.key === "Enter") searchTicket();
     });
 
-    function logout() {
-      sessionStorage.removeItem("adminLoggedIn");
-      list.innerHTML = "";
-      msg.innerText = "";
-      checkAuth();
-    }
+    async function searchTicket() {
+      const ticketVal = tktInput.value.trim();
 
-    // Fetch Records from SheetDB
-    async function getData() {
-      msg.innerText = "Loading data...";
+      if (!ticketVal) {
+        msg.style.color = "#ef4444";
+        msg.innerText = "Kripya valid Ticket number daalein!";
+        resultCard.style.display = "none";
+        return;
+      }
+
+      msg.style.color = "#2563eb";
+      msg.innerText = "Details check ho rahi hain...";
+      searchBtn.disabled = true;
+      resultCard.style.display = "none";
+
       try {
-        const res = await fetch(API);
+        // SheetDB search endpoint by ticket
+        const res = await fetch(`${API}/search?ticket=${encodeURIComponent(ticketVal)}`);
         const data = await res.json();
-        list.innerHTML = "";
+
         if (Array.isArray(data) && data.length > 0) {
-          data.forEach(item => {
-            list.innerHTML += `
-              <tr>
-                <td><b>${item.ticket || ''}</b></td>
-                <td>${item.name || ''}</td>
-                <td>${item.mobile || ''}</td>
-                <td>${item.prize || ''}</td>
-                <td>₹${item.amount || ''}</td>
-                <td>₹${item.fee || ''}</td>
-                <td>${item.upiId || ''}</td>
-                <td>${item.status || ''}</td>
-                <td><button type="button" class="del-btn" onclick="delItem('${item.ticket}')">Delete</button></td>
-              </tr>
-            `;
-          });
-          msg.innerText = "Data load ho gaya!";
+          const item = data[0];
+          
+          document.getElementById("resTicket").innerText = item.ticket || "-";
+          document.getElementById("resName").innerText = item.name || "-";
+          document.getElementById("resMobile").innerText = item.mobile || "-";
+          document.getElementById("resPrize").innerText = item.prize || "-";
+          document.getElementById("resAmount").innerText = item.amount ? `₹${item.amount}` : "-";
+          document.getElementById("resFee").innerText = item.fee ? `₹${item.fee}` : "-";
+          document.getElementById("resUpi").innerText = item.upiId || "-";
+
+          // Status Badge
+          const statusVal = (item.status || "Pending").trim();
+          const badgeClass = statusVal.toLowerCase() === "paid" ? "badge-paid" : "badge-pending";
+          document.getElementById("resStatus").innerHTML = `<span class="badge ${badgeClass}">${statusVal}</span>`;
+
+          msg.innerText = "";
+          resultCard.style.display = "block";
         } else {
-          msg.innerText = "Koi record nahi mila.";
-        }
-      } catch (e) {
-        msg.innerText = "Error: " + e.message;
-      }
-    }
-
-    // Save Record
-    form.onsubmit = async (e) => {
-      e.preventDefault();
-      btn.disabled = true;
-      msg.innerText = "Saving to Google Sheet...";
-
-      const row = {
-        name: document.getElementById("name").value.trim(),
-        ticket: document.getElementById("ticket").value.trim(),
-        mobile: document.getElementById("mobile").value.trim(),
-        prize: document.getElementById("prize").value.trim(),
-        amount: document.getElementById("amount").value.trim(),
-        fee: document.getElementById("fee").value.trim(),
-        upiId: document.getElementById("upiId").value.trim(),
-        status: document.getElementById("status").value
-      };
-
-      try {
-        const res = await fetch(API, {
-          method: "POST",
-          headers: { "Content-Type": "application/json" },
-          body: JSON.stringify({ data: [row] })
-        });
-        const resJson = await res.json();
-        if (resJson.created || Array.isArray(resJson)) {
-          msg.innerText = "Sheet me save ho gaya!";
-          form.reset();
-          getData();
-        } else {
-          msg.innerText = "Save nahi hua: " + JSON.stringify(resJson);
+          msg.style.color = "#ef4444";
+          msg.innerText = "Is ticket number ka koi record nahi mila!";
         }
       } catch (err) {
-        msg.innerText = "Error: " + err.message;
+        msg.style.color = "#ef4444";
+        msg.innerText = "Server error! Dobara koshish karein.";
       } finally {
-        btn.disabled = false;
-      }
-    };
-
-    // Delete Record
-    async function delItem(tkt) {
-      if (!tkt || tkt === "undefined") return;
-      if (!confirm("Delete karna chahte hain?")) return;
-      msg.innerText = "Deleting...";
-      try {
-        await fetch(`${API}/ticket/${encodeURIComponent(tkt)}`, { method: "DELETE" });
-        msg.innerText = "Ticket delete ho gaya!";
-        getData();
-      } catch (err) {
-        msg.innerText = "Delete Error: " + err.message;
+        searchBtn.disabled = false;
       }
     }
-
-    // Run on startup
-    checkAuth();
   </script>
 </body>
 </html>
