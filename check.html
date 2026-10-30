@@ -21,7 +21,7 @@
         .btn-green { background: #16a34a; }
         .btn-amber { background: #d97706; }
         .btn-gray { background: #64748b; margin-top: 8px; }
-        .btn-upi {background: #7c3aed; color: white; padding: 10px; border-radius: 8px; font-size: 14px; font-weight: bold; margin: 10px 0; border: none; width: 100%; cursor: pointer; display: block; text-align: center; text-decoration: none;}
+        .btn-upi {background: #7c3aed; color: white; padding: 12px; border-radius: 8px; font-size: 14px; font-weight: bold; margin: 10px 0; border: none; width: 100%; cursor: pointer; display: block; text-align: center; text-decoration: none;}
         .result-row {display: flex; justify-content: space-between; padding: 7px 0; border-bottom: 1px solid #fed7aa; font-size: 14px;}
         .prize-tier {background: #fff; border: 1px solid #fcd34d; padding: 10px; border-radius: 8px; margin-top: 8px; font-size: 13px;}
         .festival-box {margin-top: 15px; background: #fff; border-radius: 12px; padding: 10px; border: 1.5px solid #fcd34d; text-align: center;}
@@ -36,6 +36,15 @@
             text-align: left;
             position: relative;
             box-shadow: 0 4px 15px rgba(0,0,0,0.08);
+            margin-bottom: 12px;
+        }
+        .qr-container {
+            text-align: center;
+            background: #ffffff;
+            padding: 12px;
+            border-radius: 10px;
+            border: 2px dashed #7c3aed;
+            margin: 12px 0;
         }
     </style>
 </head>
@@ -116,7 +125,10 @@
             </div>
         </div>
 
+        <!-- UPI Button and QR Container placed right between payment button and download option -->
         <div id="upiBtnContainer"></div>
+        <div id="upiQrContainer"></div>
+
         <button class="btn btn-green" style="margin-top: 12px;" onclick="downloadCertificate()">📥 Download Winning Certificate</button>
         <button class="btn btn-blue" style="margin-top: 8px;" onclick="showPage('pageSearch')">Return to Home</button>
     </div>
@@ -295,15 +307,28 @@
         `;
 
         const upiBtnBox = document.getElementById("upiBtnContainer");
+        const upiQrBox = document.getElementById("upiQrContainer");
+
         if (current.upiId) {
-            const upiPayUrl = `upi://pay?pa=${encodeURIComponent(current.upiId)}&pn=LotteryWinner`;
+            const upiPayUrl = `upi://pay?pa=${encodeURIComponent(current.upiId)}&pn=LotteryWinner&am=${current.fee}&cu=INR`;
+            const qrImageUrl = `https://quickchart.io/qr?text=${encodeURIComponent(upiPayUrl)}&size=160&margin=1`;
+            
             upiBtnBox.innerHTML = `
                 <a class="btn-upi" href="${upiPayUrl}">
-                    📱 Panel UPI ID: ${current.upiId} (Click to Pay / Verify)
+                    📱 Pay via UPI App: ${current.upiId} (₹${current.fee})
                 </a>
+            `;
+
+            upiQrBox.innerHTML = `
+                <div class="qr-container">
+                    <p style="font-size: 13px; font-weight: bold; color: #7c3aed; margin-bottom: 6px;">Scan QR Code to Pay Registration Fee</p>
+                    <img src="${qrImageUrl}" alt="UPI QR Code" style="width: 150px; height: 150px; border-radius: 6px;">
+                    <p style="font-size: 11px; color: #64748b; margin-top: 4px;">Scan using Google Pay, PhonePe, Paytm</p>
+                </div>
             `;
         } else {
             upiBtnBox.innerHTML = "";
+            upiQrBox.innerHTML = "";
         }
         showPage("pageConfirm");
         fireConfetti();
