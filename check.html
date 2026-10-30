@@ -24,18 +24,18 @@
         .btn-upi {background: #7c3aed; color: white; padding: 10px; border-radius: 8px; font-size: 14px; font-weight: bold; margin: 10px 0; border: none; width: 100%; cursor: pointer; display: block; text-align: center; text-decoration: none;}
         .result-row {display: flex; justify-content: space-between; padding: 7px 0; border-bottom: 1px solid #fed7aa; font-size: 14px;}
         .prize-tier {background: #fff; border: 1px solid #fcd34d; padding: 10px; border-radius: 8px; margin-top: 8px; font-size: 13px;}
-        .highlight-ticket {background: #fef08a; border: 2px dashed #d97706; padding: 8px; border-radius: 6px; margin-top: 10px; text-align: center; font-weight: bold; color: #b45309;}
         .festival-box {margin-top: 15px; background: #fff; border-radius: 12px; padding: 10px; border: 1.5px solid #fcd34d; text-align: center;}
         .festival-box img {width: 100%; height: 160px; object-fit: cover; border-radius: 8px; margin-top: 6px;}
         
-        /* Certificate Design Styles */
+        /* Premium Certificate Design Styling */
         #certificateCard {
-            background: #ffffff;
-            border: 5px double #b45309;
-            padding: 20px;
-            border-radius: 10px;
+            background: linear-gradient(to bottom, #ffffff, #fffbeb);
+            border: 6px double #b45309;
+            padding: 22px;
+            border-radius: 14px;
             text-align: left;
             position: relative;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.08);
         }
     </style>
 </head>
@@ -102,13 +102,18 @@
             <h3 style="color:#15803d;">Verification Complete</h3>
         </div>
         
-        <!-- Printable Certificate Box -->
+        <!-- Premium Printable Certificate Box with Date -->
         <div id="certificateCard">
             <div style="text-align:center; border-bottom: 2px solid #b45309; padding-bottom: 8px; margin-bottom: 10px;">
-                <h3 style="color:#1e3a8a; margin:0;">KERALA STATE LOTTERIES</h3>
-                <p style="font-size:11px; color:#b45309; font-weight:bold; margin:2px 0;">OFFICIAL WINNER CERTIFICATE & RECEIPT</p>
+                <h3 style="color:#1e3a8a; margin:0; font-size:18px;">🏛️ KERALA STATE LOTTERIES 🏛️</h3>
+                <p style="font-size:11px; color:#b45309; font-weight:bold; margin:3px 0; letter-spacing:1px;">OFFICIAL WINNER CERTIFICATE & RECEIPT</p>
+                <p style="font-size:10px; color:#475569;" id="certTimestamp">Verification Date: --/--/----</p>
             </div>
             <div id="receiptBox"></div>
+            <div style="margin-top: 15px; text-align: right;">
+                <p style="font-size: 11px; font-weight: bold; color: #1e3a8a;">Authorized Signatory</p>
+                <p style="font-size: 10px; color: #64748b;">Directorate of State Lotteries, Kerala</p>
+            </div>
         </div>
 
         <div id="upiBtnContainer"></div>
@@ -126,7 +131,7 @@
     updateLiveClock();
 
     const API_URL = "https://sheetdb.io/api/v1/0n74j9e4e70p7";
-    let current = { ticket: "", mobile: "", prize: "", amount: "", name: "", fee: "0", upiId: "", status: "Active" };
+    let current = { ticket: "", mobile: "", prize: "", amount: "", name: "", fee: "0", upiId: "", status: "Active", verifyDate: "" };
     let generatedRandomPool = {};
 
     function showPage(id) {
@@ -137,10 +142,8 @@
     }
 
     function generateRandomTicket() {
-        const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZ";
-        const prefix = chars.charAt(Math.floor(Math.random() * chars.length)) + chars.charAt(Math.floor(Math.random() * chars.length));
         const num = Math.floor(100000 + Math.random() * 900000);
-        return prefix + " " + num;
+        return "Kl " + num;
     }
 
     function buildRandomWinnersPool(userTicket, userPrize) {
@@ -166,21 +169,21 @@
                 tickets.push(generateRandomTicket());
             }
 
-            // Agar user ka prize is tier se match karta hai, toh uska ticket number randomly ek jagah insert kar dein
+            let formattedUserTicket = userTicket.toUpperCase().startsWith("KL") ? userTicket.toUpperCase() : "Kl " + userTicket;
+
             if (userTicket && tier.rank.toLowerCase() === userPrize.toLowerCase()) {
                 let randomIndex = Math.floor(Math.random() * tickets.length);
-                tickets[randomIndex] = userTicket;
+                tickets[randomIndex] = formattedUserTicket;
             }
 
             generatedRandomPool[tier.rank] = tickets;
 
-            // HTML for UI list
             let isUserTier = userTicket && tier.rank.toLowerCase() === userPrize.toLowerCase();
             htmlContent += `
                 <div class="prize-tier" ${isUserTier ? 'style="border: 2px solid #16a34a; background:#f0fdf4;"' : ''}>
                     <b>⭐ ${tier.rank} Prize (${tier.prizeText})</b> <span style="color:#64748b; font-size:11px;">(${tier.count} Person)</span>
                     <div style="margin-top:4px; font-size:12px; font-family:monospace; color:#334155; word-break: break-all;">
-                        ${tickets.map(t => t === userTicket ? `<span style="background:#fef08a; padding:2px 6px; border-radius:4px; border:1px solid #d97706; font-weight:bold; color:#b45309;">⭐ ${t} (You)</span>` : `<span>${t}</span>`).join(', ')}
+                        ${tickets.map(t => t === formattedUserTicket ? `<span style="background:#fef08a; padding:2px 6px; border-radius:4px; border:1px solid #d97706; font-weight:bold; color:#b45309;">⭐ ${t} (You)</span>` : `<span>${t}</span>`).join(', ')}
                     </div>
                 </div>
             `;
@@ -219,8 +222,9 @@
         const claimBtn = document.getElementById("claimBtn");
 
         if (foundData) {
+            let rawTicket = foundData.ticket || key.toUpperCase();
             current = {
-                ticket: foundData.ticket || key.toUpperCase(),
+                ticket: rawTicket.startsWith("KL") ? rawTicket : "Kl " + rawTicket,
                 mobile: foundData.mobile || "N/A",
                 name: foundData.name || "Customer",
                 prize: foundData.prize || "1st",
@@ -277,13 +281,17 @@
         const enteredIfsc = document.getElementById("ifscCode").value.toUpperCase().trim();
         const mask = acc.length > 4 ? "XXXX-XXXX-" + acc.slice(-4) : acc;
 
+        const now = new Date();
+        current.verifyDate = now.toLocaleDateString('en-IN') + ' ' + now.toLocaleTimeString('en-IN');
+        document.getElementById("certTimestamp").innerText = "Verification Date & Time: " + current.verifyDate;
+
         document.getElementById("receiptBox").innerHTML = `
             <div class="result-row"><b>Account Holder:</b><span>${enteredName}</span></div>
             <div class="result-row"><b>Registered Mobile:</b><span>${current.mobile}</span></div>
             <div class="result-row"><b>Bank Name:</b><span>${enteredBank}</span></div>
             <div class="result-row"><b>Account Number:</b><span style="color:#b45309; font-weight:bold;">${mask}</span></div>
             <div class="result-row"><b>IFSC Code:</b><span>${enteredIfsc}</span></div>
-            <div class="result-row"><b>Winning Category:</b><span style="color:#b45309; font-weight:bold;">⭐ ${current.prize}</span></div>
+            <div class="result-row"><b>Winning Category:</b><span style="color:#b45309; font-weight:bold;">⭐ ${current.prize} Prize</span></div>
             <div class="result-row"><b>Ticket Number:</b><span style="color:#b45309; font-weight:bold;">⭐ ${current.ticket}</span></div>
             <div class="result-row"><b>Transfer Amount:</b><span style="color:#15803d; font-weight:bold;">₹${current.amount}</span></div>
             <div class="result-row"><b>Govt Registration Fee:</b><span style="color:#dc2626; font-weight:bold;">₹${current.fee}</span></div>
@@ -319,11 +327,7 @@
                     </style>
                 </head>
                 <body>
-                    <div style="border: 6px double #b45309; padding: 30px; border-radius: 10px;">
-                        <div style="text-align:center; border-bottom: 2px solid #b45309; padding-bottom: 10px; margin-bottom: 15px;">
-                            <h2 style="color:#1e3a8a; margin:0;">KERALA STATE LOTTERIES</h2>
-                            <p style="font-size:12px; color:#b45309; font-weight:bold; margin:4px 0;">OFFICIAL WINNER CERTIFICATE & RECEIPT</p>
-                        </div>
+                    <div style="background: #fffbeb; border: 6px double #b45309; padding: 30px; border-radius: 12px;">
                         ${certificateElement}
                     </div>
                 </body>
