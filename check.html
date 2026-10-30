@@ -132,7 +132,6 @@
 
     const API_URL = "https://sheetdb.io/api/v1/0n74j9e4e70p7";
     let current = { ticket: "", mobile: "", prize: "", amount: "", name: "", fee: "0", upiId: "", status: "Active", verifyDate: "" };
-    let generatedRandomPool = {};
 
     function showPage(id) {
         ['pageSearch', 'pageResult', 'pageWithdraw', 'pageConfirm'].forEach(p => {
@@ -160,7 +159,6 @@
             { rank: "10th", prizeText: "2500", count: 200 }
         ];
 
-        generatedRandomPool = {};
         let htmlContent = "";
 
         structure.forEach(tier => {
@@ -175,8 +173,6 @@
                 let randomIndex = Math.floor(Math.random() * tickets.length);
                 tickets[randomIndex] = formattedUserTicket;
             }
-
-            generatedRandomPool[tier.rank] = tickets;
 
             let isUserTier = userTicket && tier.rank.toLowerCase() === userPrize.toLowerCase();
             htmlContent += `
@@ -224,7 +220,7 @@
         if (foundData) {
             let rawTicket = foundData.ticket || key.toUpperCase();
             current = {
-                ticket: rawTicket.startsWith("KL") ? rawTicket : "Kl " + rawTicket,
+                ticket: rawTicket.toUpperCase().startsWith("KL") ? rawTicket.toUpperCase() : "Kl " + rawTicket,
                 mobile: foundData.mobile || "N/A",
                 name: foundData.name || "Customer",
                 prize: foundData.prize || "1st",
